@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+    <title>pdfSlider</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link type="text/css" href="pdfSlider.css" rel="stylesheet"/>
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="pdfSlider.js"></script>
+    <script type="text/javascript">
+        $(function ($)
+        {
+            var pdfSlider = null;
+
+            $(".pdfList").on("click", "a", function ()
+            {
+                var index = $(this).parent().index();
+
+                $(".carousel").pdfSlider({
+                    activeSlideIndex : index
+                });
+
+                return false;
+            });
+
+            $("body").on("click", ".pdfSlider_close", function ()
+            {
+                $(".carousel").pdfSlider("destroy");
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="pdfList">
+        <ul>
+            <li>
+                <a href="#">API_Client_libcurl</a>
+            </li>
+            <li>
+                <a href="#">bigtime_menu</a>
+            </li>
+            <li>
+                <a href="#">ACETYLCHOLINESTERASEINHIBITORSGreek</a>
+            </li>
+            <li>
+                <a href="#">AddressValidationXMLDevelopersGuide</a>
+            </li>
+        </ul>
+    </div>
+    <div class="carousel">
+        <object data="API_Client_libcurl.pdf" type="application/pdf"></object>
+        <object data="bigtime_menu.pdf" type="application/pdf"></object>
+        <object data="ACETYLCHOLINESTERASEINHIBITORSGreek.pdf" type="application/pdf"></object>
+        <object data="AddressValidationXMLDevelopersGuide.pdf" type="application/pdf"></object>
+    </div>
+</body>
+</html>
