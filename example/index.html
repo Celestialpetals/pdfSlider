@@ -3,54 +3,20 @@
 <head>
     <title>pdfSlider</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <link type="text/css" href="../pdfSlider.css" rel="stylesheet"/>
-    <script type="text/javascript" src="jquery.min.js"></script>
-    <script type="text/javascript" src="../pdfSlider.js"></script>
-    <script type="text/javascript">
-        $(function ($)
-        {
-            var pdfSlider = null;
 
-            $(".pdfList").on("click", "a", function ()
-            {
-                var index = $(this).parent().index();
+    <link type="text/css" href="css/pdfSlider.css" rel="stylesheet"/>
 
-                $(".carousel").pdfSlider({
-                    activeSlideIndex : index
-                });
+    <script type="text/javascript" src="js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="js/pdfSlider/pdfSlider.js"></script>
 
-                return false;
-            });
-
-            $("body").on("click", ".pdfSlider_close", function ()
-            {
-                $(".carousel").pdfSlider("destroy");
-            });
-        });
-    </script>
+    <script type="text/javascript" src="js/app.js"></script>
 </head>
 <body>
-    <div class="pdfList">
-        <ul>
-            <li>
-                <a href="#">API_Client_libcurl</a>
-            </li>
-            <li>
-                <a href="#">bigtime_menu</a>
-            </li>
-            <li>
-                <a href="#">ACETYLCHOLINESTERASEINHIBITORSGreek</a>
-            </li>
-            <li>
-                <a href="#">AddressValidationXMLDevelopersGuide</a>
-            </li>
-        </ul>
-    </div>
     <div class="carousel">
-        <object data="API_Client_libcurl.pdf" type="application/pdf"></object>
-        <object data="bigtime_menu.pdf" type="application/pdf"></object>
-        <object data="ACETYLCHOLINESTERASEINHIBITORSGreek.pdf" type="application/pdf"></object>
-        <object data="AddressValidationXMLDevelopersGuide.pdf" type="application/pdf"></object>
+        <img src="images/121072076.jpg" alt="" />
+        <img src="images/153584846.jpg" alt="" />
+        <img src="images/78485259.jpg" alt="" />
+        <img src="images/91410116.jpg" alt="" />
     </div>
 </body>
 </html>

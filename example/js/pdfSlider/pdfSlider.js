@@ -1,44 +1,40 @@
 /**
- @author : alexwebgr
- @desc : simple slider originally created for pdf files but can be used for any content
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+ * @author alexwebgr
+ * @title pdfSlider
+ * @desc simple slider originally created for pdf files but can be used for any content
  */
 
 (function ($)
 {
     var
-        log =
-        {
-            echo : function (msg)
-            {
-                if (window.console)
-                    console.log(msg);
-            }
-        },
-
         options = {},
 
         defaults =
         {
             container : ".carousel",
             item : "object",
-            itemHeight : 500,
             itemWidth : 960,
+            itemHeight : 500,
             speed : 700,
-            activeSlideIndex : 0
+            activeSlideIndex : 0,
+
+            _slides : null,
+            _rootContainer : "pdfSlider_rootContainer",
+            _slidesContainer : "pdfSlider_slidesContainer",
+            _navButton : "pdfSlider_button",
+            _prevButton : "pdfSlider_prev",
+            _nextButton : "pdfSlider_next",
+            _closeButton : "pdfSlider_close",
+            _thumbsContainer : "pdfSlider_thumbs",
+            _controlsContainer : "pdfSlider_controls",
+            _activeThumb : "pdfSlider_activeThumb",
+            _slide : "pdfSlider_slide",
+            _activeSlide : "activeSlide",
+            _slideWrapper : null,
+
+            _startMargin : "0px",
+            _endMargin : "-1000px",
+            _animatedProperty : "margin-left"
         },
 
         methods =
@@ -48,145 +44,201 @@
                 options = $.extend(defaults, opts);
 
                 methods._create();
+                methods._setActiveSlideIndex();
+                methods._createControls();
+                methods._createThumbs();
+                methods._setActiveSlide();
+                methods._attachEventHandlers();
             },
 
-            _setActive : function ()
+            _setSlides : function(slides)
             {
-                var slides = $(options.container + " .slide");
-                var listItems = $(".pdfList a");
+                options._slides = slides;
+            },
 
-                listItems.removeClass("activeItem");
-
-                slides
-                    .css("margin-left", "0px")
-                    .removeClass("active")
+            _setActiveSlide : function ()
+            {
+                options._slides
+                    .css(options._animatedProperty, options._startMargin)
+                    .removeClass(options._activeSlide)
                 ;
 
-                $.each(slides, function(index)
+                $.each(options._slides, function(index)
                 {
                     if (index < options.activeSlideIndex)
                     {
-                        $(this).css({
-                            marginLeft : "-1000px"
-                        });
+                        $(this).css(options._animatedProperty, options._endMargin);
                     }
                 });
 
-                $(".slide").eq(options.activeSlideIndex).addClass("active");
-                listItems.eq(options.activeSlideIndex).addClass("activeItem");
+                methods._setActiveThumb();
+                options._slides.eq(options.activeSlideIndex).addClass(options._activeSlide);
 
-                $(options.container).show();
+                options.container.show();
+                options._controlsContainer.show();
             },
 
-            destroy : function ()
+            _setActiveThumb : function()
             {
-                var slides = $(options.container + " .slide");
+                options._thumbsContainer.find("." + options._activeThumb).removeClass(options._activeThumb);
+                options._thumbsContainer.find("a").eq(options.activeSlideIndex).addClass(options._activeThumb);
+            },
 
-                $(options.container)
-                    .hide()
-                    .find(".slide").removeClass("active")
-                ;
-                options.activeSlideIndex = 0;
-                slides.css("margin-left", "0px");
+            _setActiveSlideIndex : function()
+            {
+                if(options.activeSlideIndex < 0)
+                    options.activeSlideIndex = 0;
+
+                if(options.activeSlideIndex > options.container.find(options.item))
+                    options.activeSlideIndex = options.container.find(options.item).length - 1;
             },
 
             _create : function ()
             {
-                if (!$(".slide").length)
+                options.container = $(options.container).addClass(options._slidesContainer);
+                options._rootContainer = $("<div />").addClass(options._rootContainer);
+                options._thumbsContainer = $("<div />").addClass(options._thumbsContainer);
+                options._controlsContainer = $("<div />").addClass(options._controlsContainer);
+                options._slideWrapper = $("<div />").addClass(options._slide);
+
+                options.container.wrap(options._rootContainer);
+                options.container.after(options._controlsContainer);
+                options.container.before(options._thumbsContainer);
+
+                options.container.find(options.item).wrap(options._slideWrapper);
+                var slides = options.container.find("." + options._slide);
+
+                methods._setSlides(slides);
+
+                $.each(options._slides, function(key, value)
                 {
-                    var items = $(options.container + " " + options.item);
-
-                    $.each(items, function ()
-                    {
-                        //console.log($(this).index());
-                        $(this)
-                            .attr(
-                            {
-                                "height":options.itemHeight,
-                                "width":options.itemWidth
-                            })
-                            .wrap("<div class='slide' style='z-index:-" + $(this).index() * 10 + "' />")
-                        ;
-                    });
-
-                    $(options.container)
-                        .append("<div class='pdfSlider_button next'/>")
-                        .append("<div class='pdfSlider_button prev'/>")
-                        .append("<div class='pdfSlider_close'/>")
+                    $(value)
+                        .attr(
+                        {
+                            height : options.itemHeight,
+                            width : options.itemWidth
+                        })
+                        .css({
+                            zIndex : "-" + $(value).index() * 10
+                        })
                     ;
-                }
-
-                methods._setActive();
-                methods._animate();
+                });
             },
 
-            _animate : function ()
+            _createControls : function()
             {
-                var
-                    init = 0,
-                    i = options.activeSlideIndex,
-                    slides = $(options.container + " .slide"),
-                    slidesLength = slides.length - 1
+                var prev = $("<div />").addClass(options._navButton).addClass(options._prevButton);
+                var next = $("<div />").addClass(options._navButton).addClass(options._nextButton);
+                var close = $("<div />").addClass(options._navButton).addClass(options._closeButton);
+
+                options._controlsContainer.append(prev);
+                options._controlsContainer.append(next);
+                options._controlsContainer.append(close);
+            },
+
+            _createThumbs : function()
+            {
+                var html = "";
+                var listItem = $("<ul><li><a href='#'> </a></li></ul>");
+
+                $.each(options._slides, function(key)
+                {
+                    listItem.find("a").text("item" + key);
+                    html += listItem.html();
+                });
+
+                options._thumbsContainer.html(html);
+            },
+
+            destroy : function ()
+            {
+                options._controlsContainer.hide();
+                options.container
+                    .hide()
+                    .find("." + options._activeSlide).removeClass(options._activeSlide)
+                ;
+                options.activeSlideIndex = 0;
+                options._slides.css(options._animatedProperty, options._startMargin);
+                options._thumbsContainer.find("a").removeClass(options._activeThumb);
+            },
+
+            //todo remove hard-coded animated property
+            next : function()
+            {
+                if (options.activeSlideIndex < options._slides.length - 1)
+                {
+                    var activeSlide = options._slides.eq(options.activeSlideIndex);
+
+                    activeSlide.animate(
+                        {
+                            marginLeft : options._endMargin
+                        },
+                        options.speed,
+                        function ()
+                        {
+                            activeSlide.removeClass(options._activeSlide);
+                            activeSlide.next("." + options._slide).addClass(options._activeSlide);
+                        }
+                    );
+                    options.activeSlideIndex++;
+
+                    methods._setActiveThumb();
+                }
+            },
+
+            //todo remove hard-coded animated property
+            prev : function()
+            {
+                if (options.activeSlideIndex > 0)
+                {
+                    var activeSlide = options._slides.eq(options.activeSlideIndex);
+
+                    activeSlide.removeClass(options._activeSlide);
+                    activeSlide.prev("." + options._slide)
+                        .addClass(options._activeSlide)
+                        .animate(
+                            {
+                                marginLeft : options._startMargin
+                            },
+                            options.speed
+                        )
+                    ;
+                    options.activeSlideIndex--;
+
+                    methods._setActiveThumb();
+                }
+            },
+
+            _attachEventHandlers : function()
+            {
+                options._controlsContainer
+                    .on({
+                        click : function()
+                        {
+                            if($(this).hasClass(options._prevButton))
+                                methods.prev();
+
+                            if($(this).hasClass(options._nextButton))
+                                methods.next();
+
+                            if($(this).hasClass(options._closeButton))
+                                methods.destroy();
+                        }
+                    }, "." + options._navButton)
                 ;
 
-                $(options.container)
-                    .off()
-                    .on(
-                    {
-                        click : function ()
+                options._thumbsContainer
+                    .on({
+                        click : function()
                         {
-                            var ele = $(".active.slide");
+                            options.activeSlideIndex = $(this).parent().index();
 
-                            if (!ele.length)
-                                ele = slides.first().addClass("active");
+                            methods._setActiveSlide();
 
-                            var index = ele.index() - 1;
-
-                            if ($(this).hasClass("next"))
-                            {
-                                if (i < slidesLength)
-                                {
-                                    ele.animate(
-                                        {
-                                            marginLeft:"-1000px"
-                                        },
-                                        options.speed,
-                                        function ()
-                                        {
-                                            $(".pdfList .activeItem").removeClass("activeItem");
-                                            $(".pdfList a").eq(index).addClass("activeItem");
-                                            ele.removeClass("active");
-                                            ele.next(".slide")
-                                                .addClass("active")
-                                            ;
-                                        }
-                                    );
-                                    i++;
-                                }
-                            }
-
-                            if ($(this).hasClass("prev"))
-                            {
-                                if (i > init)
-                                {
-                                    $(".pdfList .activeItem").removeClass("activeItem");
-                                    $(".pdfList a").eq(index).addClass("activeItem");
-                                    ele.removeClass("active");
-                                    ele.prev(".slide")
-                                        .addClass("active")
-                                        .animate(
-                                        {
-                                            marginLeft:"0px"
-                                        },
-                                        options.speed
-                                    )
-                                    ;
-                                    i--;
-                                }
-                            }
+                            return false;
                         }
-                    }, ".pdfSlider_button"
-                );
+                    }, "a")
+                ;
             }
         }
     ;
@@ -204,7 +256,7 @@
         }
         else
         {
-            log.echo("Method " + method + " does not exist");
+            console.log("Method " + method + " does not exist");
 
             return false;
         }
