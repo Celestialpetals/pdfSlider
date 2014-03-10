@@ -13,8 +13,8 @@
         {
             container : "#carousel",
             item : "object",
-            itemWidth : 960,
-            itemHeight : 500,
+            itemWidth : $(window).width() - 40,
+            itemHeight : $(window).height() - 60,
             speed : 700,
             activeSlideIndex : 0,
 
@@ -119,11 +119,12 @@
 
                 $.each(options._slides, function(key, value)
                 {
+                    var zIndex = -($(value).index() * 10) + (10 * options._slides.length);
                     $(value)
                         .css({
                             height : options.itemHeight,
                             width : options.itemWidth,
-                            zIndex : "-" + $(value).index() * 10
+                            zIndex : zIndex
                         })
                     ;
                 });
