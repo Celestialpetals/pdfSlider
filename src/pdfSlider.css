@@ -6,7 +6,6 @@
 .pdfSlider_rootContainer .pdfSlider_button
 {
     position : absolute;
-    top : 50%;
     background : #333;
     width : 50px;
     height : 50px;
@@ -15,11 +14,13 @@
 .pdfSlider_rootContainer .pdfSlider_prev
 {
     margin-top: -25px;
+    top : 50%;
     left : 0;
 }
 .pdfSlider_rootContainer .pdfSlider_next
 {
     margin-top: -25px;
+    top : 50%;
     right : 0;
 }
 
@@ -31,6 +32,15 @@
     width: 20px;
     height: 20px;
     z-index: 2000;
+}
+
+.pdfSlider_rootContainer .pdfSlider_hideControls
+{
+    right: 0;
+    bottom: -30px;
+    width: auto;
+    height: auto;
+    background: none;
 }
 
 .pdfSlider_rootContainer .pdfSlider_slidesContainer
