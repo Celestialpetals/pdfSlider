@@ -25,12 +25,11 @@
             _prevButton : "pdfSlider_prev",
             _nextButton : "pdfSlider_next",
             _closeButton : "pdfSlider_close",
-            _thumbsContainer : "pdfSlider_thumbs",
-            _controlsContainer : "pdfSlider_controls",
+            _thumbsContainer : "pdfSlider_thumbsContainer",
+            _controlsContainer : "pdfSlider_controlsContainer",
             _activeThumb : "pdfSlider_activeThumb",
-            _slide : "pdfSlider_slide",
             _activeSlide : "activeSlide",
-            _slideWrapper : null,
+            _slideWrapper : "pdfSlider_slideWrapper",
 
             _startMargin : "0px",
             _endMargin : "-1000px",
@@ -96,17 +95,24 @@
             _create : function ()
             {
                 options.container = $(options.container).addClass(options._slidesContainer);
-                options._rootContainer = $("<div />").addClass(options._rootContainer);
+                options._rootContainer = $("<div />")
+                    .addClass(options._rootContainer)
+                    .css({
+                        height : options.itemHeight,
+                        width : options.itemWidth
+                    })
+                ;
                 options._thumbsContainer = $("<div />").addClass(options._thumbsContainer);
                 options._controlsContainer = $("<div />").addClass(options._controlsContainer);
-                options._slideWrapper = $("<div />").addClass(options._slide);
+                options._slideWrapper = $("<div />").addClass(options._slideWrapper);
 
                 options.container.wrap(options._rootContainer);
                 options.container.after(options._controlsContainer);
                 options.container.before(options._thumbsContainer);
 
                 options.container.find(options.item).wrap(options._slideWrapper);
-                var slides = options.container.find("." + options._slide);
+
+                var slides = options.container.children();
 
                 methods._setSlides(slides);
 
@@ -174,7 +180,7 @@
                         function ()
                         {
                             activeSlide.removeClass(options._activeSlide);
-                            activeSlide.next("." + options._slide).addClass(options._activeSlide);
+                            activeSlide.next(options._slideWrapper).addClass(options._activeSlide);
                         }
                     );
                     options.activeSlideIndex++;
@@ -191,7 +197,7 @@
                     var activeSlide = options._slides.eq(options.activeSlideIndex);
 
                     activeSlide.removeClass(options._activeSlide);
-                    activeSlide.prev("." + options._slide)
+                    activeSlide.prev(options._slideWrapper)
                         .addClass(options._activeSlide)
                         .animate(
                         {
