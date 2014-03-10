@@ -25,6 +25,7 @@
             _prevButton : "pdfSlider_prev",
             _nextButton : "pdfSlider_next",
             _closeButton : "pdfSlider_close",
+            _hideControlsButton : "pdfSlider_hideControls",
             _thumbsContainer : "pdfSlider_thumbsContainer",
             _controlsContainer : "pdfSlider_controlsContainer",
             _activeThumb : "pdfSlider_activeThumb",
@@ -103,7 +104,7 @@
                     })
                 ;
                 options._thumbsContainer = $("<div />").addClass(options._thumbsContainer);
-                options._controlsContainer = $("<div />").addClass(options._controlsContainer);
+                options._controlsContainer = $("<div />").addClass(options._controlsContainer).addClass("isVisible");
                 options._slideWrapper = $("<div />").addClass(options._slideWrapper);
 
                 options.container.wrap(options._rootContainer);
@@ -133,10 +134,15 @@
                 var prev = $("<div />").addClass(options._navButton).addClass(options._prevButton);
                 var next = $("<div />").addClass(options._navButton).addClass(options._nextButton);
                 var close = $("<div />").addClass(options._navButton).addClass(options._closeButton);
+                var hideControls = $("<div />").addClass(options._navButton).addClass(options._hideControlsButton);
+                var anchor = $("<a href='#'></a>").text("hideControls");
+
+                hideControls.html(anchor);
 
                 options._controlsContainer.append(prev);
                 options._controlsContainer.append(next);
                 options._controlsContainer.append(close);
+                options._controlsContainer.append(hideControls);
             },
 
             _createThumbs : function()
@@ -144,9 +150,16 @@
                 var html = "";
                 var listItem = $("<ul><li><a href='#'> </a></li></ul>");
 
-                $.each(options._slides, function(key)
+                $.each(options._slides, function(key, value)
                 {
-                    listItem.find("a").text("item" + key);
+                    var caption = $(value).find(options.item).data("caption");
+                    if(caption == undefined)
+                    {
+                        var i = parseInt(key) + 1;
+                        caption = "slide " + i;
+                    }
+
+                    listItem.find("a").text(caption);
                     html += listItem.html();
                 });
 
@@ -212,6 +225,17 @@
                 }
             },
 
+            _hideControls : function()
+            {
+                options._controlsContainer.toggleClass("isVisible");
+                options._controlsContainer.find("." + options._navButton).not("." + options._hideControlsButton).toggle();
+
+                if(options._controlsContainer.hasClass("isVisible"))
+                    $("." + options._hideControlsButton).find("a").text("hideControls");
+                else
+                    $("." + options._hideControlsButton).find("a").text("showControls");
+            },
+
             _attachEventHandlers : function()
             {
                 options._controlsContainer
@@ -226,6 +250,11 @@
 
                             if($(this).hasClass(options._closeButton))
                                 methods.destroy();
+
+                            if($(this).hasClass(options._hideControlsButton))
+                                methods._hideControls();
+
+                            return false;
                         }
                     }, "." + options._navButton)
                 ;
