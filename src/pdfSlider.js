@@ -15,7 +15,7 @@
             item : "object",
             itemWidth : $(window).width() - 40,
             itemHeight : $(window).height() - 60,
-            speed : 700,
+            speed : 1000,
             activeSlideIndex : 0,
 
             _slides : null,
@@ -33,7 +33,7 @@
             _slideWrapper : "pdfSlider_slideWrapper",
 
             _startMargin : "0px",
-            _endMargin : "-1000px",
+            _endMargin : "-3000px",
             _animatedProperty : "margin-left"
         },
 
