@@ -11,7 +11,7 @@
 
         defaults =
         {
-            container : ".carousel",
+            container : "#carousel",
             item : "object",
             itemWidth : 960,
             itemHeight : 500,
@@ -113,12 +113,9 @@
                 $.each(options._slides, function(key, value)
                 {
                     $(value)
-                        .attr(
-                        {
-                            height : options.itemHeight,
-                            width : options.itemWidth
-                        })
                         .css({
+                            height : options.itemHeight,
+                            width : options.itemWidth,
                             zIndex : "-" + $(value).index() * 10
                         })
                     ;

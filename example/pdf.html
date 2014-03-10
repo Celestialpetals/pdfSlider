@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>pdfSlider</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <link type="text/css" href="css/pdfSlider.css" rel="stylesheet"/>
+
+    <script type="text/javascript" src="js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="js/pdfSlider/pdfSlider.js"></script>
+
+    <script type="text/javascript">
+        $(function($)
+        {
+            $("#carousel").pdfSlider();
+        });
+    </script>
+</head>
+<body>
+    <div id="carousel">
+        <object data="pdf/original.pdf" type="application/pdf"></object>
+        <object data="pdf/samuel.pdf" type="application/pdf"></object>
+        <object data="pdf/bacon.pdf" type="application/pdf"></object>
+        <object data="pdf/beer.pdf" type="application/pdf"></object>
+    </div>
+</body>
+</html>

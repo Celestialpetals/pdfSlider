@@ -40,6 +40,12 @@
 	left : 0;
 }
 
+.pdfSlider_rootContainer .pdfSlider_slide object
+{
+    width: 100%;
+    height: 100%;
+}
+
 .pdfSlider_rootContainer .pdfSlider_close
 {
     position: absolute;
