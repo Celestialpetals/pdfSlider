@@ -11,7 +11,7 @@
 
         defaults =
         {
-            container : ".carousel",
+            container : "#carousel",
             item : "object",
             itemWidth : 960,
             itemHeight : 500,
@@ -113,12 +113,9 @@
                 $.each(options._slides, function(key, value)
                 {
                     $(value)
-                        .attr(
-                        {
-                            height : options.itemHeight,
-                            width : options.itemWidth
-                        })
                         .css({
+                            height : options.itemHeight,
+                            width : options.itemWidth,
                             zIndex : "-" + $(value).index() * 10
                         })
                     ;
@@ -197,11 +194,11 @@
                     activeSlide.prev("." + options._slide)
                         .addClass(options._activeSlide)
                         .animate(
-                            {
-                                marginLeft : options._startMargin
-                            },
-                            options.speed
-                        )
+                        {
+                            marginLeft : options._startMargin
+                        },
+                        options.speed
+                    )
                     ;
                     options.activeSlideIndex--;
 
@@ -241,7 +238,7 @@
                 ;
             }
         }
-    ;
+        ;
 
     $.fn.pdfSlider = function (method)
     {
